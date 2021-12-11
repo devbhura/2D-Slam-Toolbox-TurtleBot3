@@ -27,20 +27,21 @@ class Mover:
         while not rospy.is_shutdown():
             
 
-            
+            x = np.random.choice([-0.7,0.7])
+            y = np.random.choice([-0.7,0.7])
             # self.rate.sleep()
-            direction = np.random.choice([0,1])
-            if direction == 1:
-                x = 0.8
-                y = 0.3
-            elif direction == 0:
-                y = 0.8
-                x = 0.3
+            # direction = np.random.choice([0,1])
+            # if direction == 1:
+            #     x = np.random
+            #     y = 0.3
+            # elif direction == 0:
+            #     y = 0.8
+            #     x = 0.3
 
-            sign = np.random.choice([0,1])
-            if sign == 1:
-                x = -x
-                y = -y
+            # sign = np.random.choice([0,1])
+            # if sign == 1:
+            #     x = -x
+            #     y = -y
             
             
             self.goal = MoveBaseGoal()

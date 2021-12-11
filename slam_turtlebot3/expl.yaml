@@ -1,6 +1,6 @@
-image: map_gazebo.pgm
+image: expl.pgm
 resolution: 0.050000
-origin: [-7.639185, -5.152231, 0.000000]
+origin: [-7.455332, -2.090909, 0.000000]
 negate: 0
 occupied_thresh: 0.65
 free_thresh: 0.196

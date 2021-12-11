@@ -1,7 +1,11 @@
 #!/usr/bin/env python3
 
 """
-
+Finds the new point for the robot to move to
+Action
+    + move_base: moves the robot
+Subscriber
+    + Odometry: The position of the robot in the odom frame
 
 """
 
@@ -17,7 +21,8 @@ from nav_msgs.msg import Odometry
 class Mover:
 
     def __init__(self):
-
+        """ Subscribes to odom, and sends an action to move base with the new point
+        """
         
         self.odom = rospy.Subscriber("/odom",Odometry, self.odom_callback)
         self.client = actionlib.SimpleActionClient('move_base',MoveBaseAction)
@@ -53,16 +58,19 @@ class Mover:
             # self.goal.target_pose.pose.orientation.y = np.random.random()
             self.goal.target_pose.pose.orientation.w = 1
             
-            self.client.send_goal(self.goal)
+            self.client.send_goal_and_wait(self.goal,execute_timeout = rospy.Duration(20))
             self.client.wait_for_result()
             self.client.get_result()
 
+            # Checks if the move_base found a path. If yes, then it updates the position of the robot
             if self.client.get_state() == GoalStatus.SUCCEEDED:
                 self.pos_x = self.pos_x + x
                 self.pos_y = self.pos_y + y
 
 
     def odom_callback(self,data):
+        """Assigns the x and y positions of the robot to variables
+        """
 
         self.pos_x = data.pose.pose.position.x
         self.pos_y = data.pose.pose.position.y

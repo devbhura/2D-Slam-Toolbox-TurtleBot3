@@ -1,0 +1,80 @@
+#!/usr/bin/env python3
+
+"""
+
+
+"""
+
+import rospy
+import numpy as np
+import actionlib
+from actionlib_msgs.msg import GoalStatus
+from geometry_msgs.msg import PoseStamped
+from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
+from nav_msgs.msg import Odometry
+
+
+class Mover:
+
+    def __init__(self):
+
+        
+        self.odom = rospy.Subscriber("/odom",Odometry, self.odom_callback)
+        self.client = actionlib.SimpleActionClient('move_base',MoveBaseAction)
+        self.client.wait_for_server()
+        self.rate = rospy.Rate(10)
+
+        while not rospy.is_shutdown():
+            
+
+            
+            # self.rate.sleep()
+            direction = np.random.choice([0,1])
+            if direction == 1:
+                x = 0.8
+                y = 0
+            elif direction == 0:
+                y = 0.8
+                x = 0
+
+            sign = np.random.choice([0,1])
+            if sign == 1:
+                x = -x
+                y = -y
+            
+            
+            self.goal = MoveBaseGoal()
+            self.goal.target_pose.header.frame_id = "map"
+            self.goal.target_pose.header.stamp = rospy.Time.now()
+            self.goal.target_pose.pose.position.x = self.pos_x + x
+            self.goal.target_pose.pose.position.y = self.pos_y + y 
+            self.goal.target_pose.pose.orientation.w = 1
+            
+            self.client.send_goal(self.goal)
+            self.client.wait_for_result()
+            self.client.get_result()
+
+            if self.client.get_state() == GoalStatus.SUCCEEDED:
+                self.pos_x = self.pos_x + x
+                self.pos_y = self.pos_y + y
+
+
+    def odom_callback(self,data):
+
+        self.pos_x = data.pose.pose.position.x
+        self.pos_y = data.pose.pose.position.y
+
+
+
+
+
+
+def main():
+    rospy.init_node("Mover")
+    Mover()
+    
+if __name__ == "__main__":
+    try:
+        main()
+    except rospy.ROSInterruptException:
+        pass

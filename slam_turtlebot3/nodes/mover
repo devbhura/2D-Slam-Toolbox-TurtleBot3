@@ -32,10 +32,10 @@ class Mover:
             direction = np.random.choice([0,1])
             if direction == 1:
                 x = 0.8
-                y = 0
+                y = 0.3
             elif direction == 0:
                 y = 0.8
-                x = 0
+                x = 0.3
 
             sign = np.random.choice([0,1])
             if sign == 1:
@@ -48,6 +48,8 @@ class Mover:
             self.goal.target_pose.header.stamp = rospy.Time.now()
             self.goal.target_pose.pose.position.x = self.pos_x + x
             self.goal.target_pose.pose.position.y = self.pos_y + y 
+            # self.goal.target_pose.pose.orientation.x = np.random.random()
+            # self.goal.target_pose.pose.orientation.y = np.random.random()
             self.goal.target_pose.pose.orientation.w = 1
             
             self.client.send_goal(self.goal)
